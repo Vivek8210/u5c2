@@ -1,10 +1,36 @@
+import { useEffect } from "react";
 import "./Rentals.css";
+import { useState } from "react";
+
 
 export const Rentals = () => {
+
+  const [data,setData]=useState([])
+
+  useEffect(()=>{
+   
+    const getData=()=>{
+      fetch(`http://localhost:8080/houses`)
+      .then(res=>res.json()).then(data=>
+
+        setData(data)
+      )
+    }
+    getData()
+  },[]);
+
+
+  const idSort=(data)=>{
+    let check=data.sort((a,b)=>{
+      return b.id - a.id
+    })
+   
+  }
+ 
   return (
     <div className="rentalContainer">
       <div className="sortingButtons">
-        <button className="sortById">Sort by ID</button>
+        <button className="sortById" onClick={idSort}>Sort by ID</button>
         <button className="sortByRentAsc">Rent Low to high</button>
         <button className="sortByRentDesc">Rent High to low</button>
         <button className="sortByAreaAsc">Area Low to high</button>
@@ -29,7 +55,7 @@ export const Rentals = () => {
           </tr>
         </thead>
         <tbody>
-          {[].map((house, index) => {
+          {data.map((house, index) => {
             return (
               <tr key={house.id} className="houseDetails">
                 <td className="houseId">{house.id}</td>
@@ -40,6 +66,7 @@ export const Rentals = () => {
                 <td className="rent">{house.rent}</td>
                 <td className="preferredTenants">
                   {/* Show text Both or Bachelors or Married based on values */}
+                  {house.preferredTenants}
                 </td>
                 <td className="houseImage">
                   <img src={house.image} alt="house" />
